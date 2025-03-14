@@ -78,16 +78,17 @@ jobs:
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
-        with:
-          path: artifacts
+
+      - name: List downloaded artifacts
+        run: find . -type f | sort
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            artifacts/node-enigo-linux-x64.node/index.node
-            artifacts/node-enigo-macos-arm64.node/index.node
+            ./node-enigo-linux-x64.node
+            ./node-enigo-macos-arm64.node
           draft: false
           prerelease: false
           generate_release_notes: true
