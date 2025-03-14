@@ -40,7 +40,7 @@ async function main() {
     
     // Download the file to the destination directory
     await download(downloadUrl, destDir);
-    
+
     console.log(`Successfully downloaded binary to ${path.join(destDir, binaryName)}`);
   } catch (error) {
     console.error('Error downloading binary:', error.message);
