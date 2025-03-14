@@ -78,17 +78,19 @@ jobs:
     steps:
       - name: Download all artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: $GITHUB_WORKSPACE
 
       - name: List downloaded artifacts
-        run: find . -type f | sort
+        run: find $GITHUB_WORKSPACE -type f | sort
 
       - name: Create Release
         id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            ./node-enigo-linux-x64.node
-            ./node-enigo-macos-arm64.node
+            $GITHUB_WORKSPACE/node-enigo-linux-x64.node/node-enigo-linux-x64.node
+            $GITHUB_WORKSPACE/node-enigo-macos-arm64.node/node-enigo-macos-arm64.node
           draft: false
           prerelease: false
           generate_release_notes: true
