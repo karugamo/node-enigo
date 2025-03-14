@@ -1,4 +1,4 @@
-const https = require('https');
+const download = require('download');
 const fs = require('fs');
 const path = require('path');
 const { platform, arch } = process;
@@ -23,35 +23,6 @@ function getBinaryName() {
   return null;
 }
 
-// Download a file from a URL to a local path
-function downloadFile(url, destPath) {
-  return new Promise((resolve, reject) => {
-    const file = fs.createWriteStream(destPath);
-    
-    https.get(url, (response) => {
-      if (response.statusCode !== 200) {
-        reject(new Error(`Failed to download file: ${response.statusCode} ${response.statusMessage}`));
-        return;
-      }
-      
-      response.pipe(file);
-      
-      file.on('finish', () => {
-        file.close();
-        resolve();
-      });
-      
-      file.on('error', (err) => {
-        fs.unlink(destPath, () => {}); // Delete the file on error
-        reject(err);
-      });
-    }).on('error', (err) => {
-      fs.unlink(destPath, () => {}); // Delete the file on error
-      reject(err);
-    });
-  });
-}
-
 async function main() {
   try {
     const binaryName = getBinaryName();
@@ -63,13 +34,14 @@ async function main() {
     }
     
     const downloadUrl = `https://github.com/${owner}/${repo}/releases/download/v${version}/${binaryName}`;
-    const destPath = path.join(__dirname, '..', binaryName);
+    const destDir = path.join(__dirname, '..');
     
     console.log(`Downloading binary from ${downloadUrl}...`);
     
-    await downloadFile(downloadUrl, destPath);
+    // Download the file to the destination directory
+    await download(downloadUrl, destDir);
     
-    console.log(`Successfully downloaded binary to ${destPath}`);
+    console.log(`Successfully downloaded binary to ${path.join(destDir, binaryName)}`);
   } catch (error) {
     console.error('Error downloading binary:', error.message);
     console.log('Will fall back to building from source.');
