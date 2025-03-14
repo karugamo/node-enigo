@@ -8,7 +8,7 @@ const packageJson = require('../package.json');
 const version = packageJson.version;
 
 // GitHub repository information
-const owner = 'yourusername'; // Replace with your GitHub username
+const owner = 'karugamo';
 const repo = 'node-enigo';
 
 // Determine which binary to download based on platform and architecture
