@@ -103,6 +103,34 @@ npm install
 npm run build
 ```
 
+## Building and Distributing Binaries
+
+This project uses GitHub Actions to automatically build and distribute binaries for multiple platforms and architectures.
+
+### Supported Platforms in CI
+
+- **Linux**: x64
+- **macOS**: arm64
+
+### How to Release
+
+1. Create a new tag with the version number:
+   ```bash
+   git tag v1.2.0
+   git push origin v1.2.0
+   ```
+
+2. The GitHub Actions workflow will automatically:
+   - Build binaries for all supported platforms
+   - Create a GitHub Release with the binaries attached
+   - The binaries will be named according to their platform and architecture:
+     - `node-enigo-linux-x64.node`
+     - `node-enigo-macos-arm64.node`
+
+### Manual Workflow Trigger
+
+You can also manually trigger the build workflow from the GitHub Actions tab in your repository.
+
 ## License
 
 MIT 

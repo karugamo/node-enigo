@@ -7,7 +7,8 @@
     "build": "cargo build --release",
     "postbuild": "node scripts/copy-binary.js",
     "test": "node test.js",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "install": "node scripts/download-binary.js || npm run build"
   },
   "license": "MIT",
   "keywords": [
@@ -22,11 +23,19 @@
   "files": [
     "index.js",
     "index.node",
-    "README.md"
+    "node-enigo-linux-x64.node",
+    "node-enigo-macos-arm64.node",
+    "README.md",
+    "scripts/download-binary.js",
+    "scripts/copy-binary.js"
   ],
   "engines": {
     "node": ">= 10.0.0"
   },
   "dependencies": {},
-  "devDependencies": {}
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/node-enigo.git"
+  }
 }
