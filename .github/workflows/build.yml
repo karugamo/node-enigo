@@ -44,31 +44,31 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y libx11-dev libxtst-dev libxdo-dev
 
-      - name: Build with napi-rs
+      - name: Build
         run: |
-          if [ "${{ matrix.os }}" = "macos-latest" ]; then
+          if [ "${{ matrix.os }}" = "macos-latest" ] && [ "${{ matrix.target }}" = "aarch64-apple-darwin" ]; then
+            # Cross-compile for arm64 on macOS
             rustup target add aarch64-apple-darwin
-            cargo build --release --target aarch64-apple-darwin --features napi
+            cargo build --release --target aarch64-apple-darwin
           else
-            cargo build --release --features napi
+            cargo build --release
           fi
 
       - name: Copy binary
         run: |
-          if [ "${{ matrix.os }}" = "macos-latest" ]; then
-            cp target/aarch64-apple-darwin/release/libenigo_example.dylib index.node
+          if [ "${{ matrix.os }}" = "macos-latest" ] && [ "${{ matrix.target }}" = "aarch64-apple-darwin" ]; then
+            # For macOS arm64
+            cp target/aarch64-apple-darwin/release/libenigo_example.dylib ${{ matrix.artifact_name }}
           elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
-            cp target/release/libenigo_example.so index.node
+            # For Linux x64
+            cp target/release/libenigo_example.so ${{ matrix.artifact_name }}
           fi
-
-      - name: Optimize Binary
-        run: strip index.node || echo "Skipping strip"
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.asset_name }}
-          path: index.node
+          path: ${{ matrix.artifact_name }}
 
   release:
     name: Create Release
@@ -79,10 +79,13 @@ jobs:
       - name: Download all artifacts
         uses: actions/download-artifact@v3
 
-      - name: Create GitHub Release
+      - name: Create Release
+        id: create_release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            node-enigo-linux-x64.node
-            node-enigo-macos-arm64.node
-          tag_name: ${{ github.ref }}
+            node-enigo-linux-x64.node/index.node
+            node-enigo-macos-arm64.node/index.node
+          draft: false
+          prerelease: false
+          generate_release_notes: true 
