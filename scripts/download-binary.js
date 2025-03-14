@@ -15,6 +15,8 @@ const repo = 'node-enigo';
 function getBinaryName() {
   if (platform === 'linux' && arch === 'x64') {
     return 'node-enigo-linux-x64.node';
+  } else if (platform === 'linux' && arch === 'arm64') {
+    return 'node-enigo-linux-arm64.node';
   } else if (platform === 'darwin' && arch === 'arm64') {
     return 'node-enigo-macos-arm64.node';
   }

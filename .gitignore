@@ -21,3 +21,6 @@ Thumbs.db
 .vscode/
 *.swp
 *.swo 
+
+# Binary files
+*.node
