@@ -20,7 +20,7 @@ jobs:
             target: x86_64-unknown-linux-gnu
             artifact_name: node-enigo-linux-x64.node
             asset_name: node-enigo-linux-x64.node
-          - os: ubuntu-latest
+          - os: ubuntu-24.04-arm
             target: aarch64-unknown-linux-gnu
             artifact_name: node-enigo-linux-arm64.node
             asset_name: node-enigo-linux-arm64.node
