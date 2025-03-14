@@ -1,42 +1,42 @@
-const { existsSync } = require('fs')
-const { join } = require('path')
-const { platform, arch } = process
+const { existsSync } = require("fs");
+const { join } = require("path");
+const { platform, arch } = process;
 
-let nativeBinding = null
+let nativeBinding = null;
 
 function getPlatformSpecificBinary() {
   // Map platform and architecture to binary name
-  if (platform === 'linux' && arch === 'x64') {
-    return 'node-enigo-linux-x64.node'
-  } else if (platform === 'darwin') {
-    if (arch === 'arm64') {
-      return 'node-enigo-macos-arm64.node'
-    } else if (arch === 'x64') {
-      // Fallback to the default binary for macOS x64
-      return 'index.node'
+  if (platform === "linux") {
+    if (arch === "x64") {
+      return "node-enigo-linux-x64.node";
+    } else if (arch === "arm64") {
+      return "node-enigo-linux-arm64.node";
+    }
+  } else if (platform === "darwin") {
+    if (arch === "arm64") {
+      return "node-enigo-macos-arm64.node";
     }
   }
-  
-  // Default to the standard binary
-  return 'index.node'
+
+  // Instead of falling back to a default binary, throw an error for unsupported platforms
+  throw new Error(
+    `Unsupported platform or architecture: ${platform}-${arch}. Supported combinations are: linux-x64, linux-arm64, darwin-arm64`
+  );
 }
 
 try {
-  // First try to load the platform-specific binary
-  const platformSpecificPath = join(__dirname, getPlatformSpecificBinary())
-  
-  // Then try the default binary path
-  const defaultBinaryPath = join(__dirname, 'index.node')
-  
+  // Try to load the platform-specific binary
+  const platformSpecificPath = join(__dirname, getPlatformSpecificBinary());
+
   if (existsSync(platformSpecificPath)) {
-    nativeBinding = require(platformSpecificPath)
-  } else if (existsSync(defaultBinaryPath)) {
-    nativeBinding = require('./index.node')
+    nativeBinding = require(platformSpecificPath);
   } else {
-    throw new Error(`Native binding not found at ${defaultBinaryPath} or platform-specific path`)
+    throw new Error(`Native binding not found at ${platformSpecificPath}`);
   }
 } catch (error) {
-  throw new Error(`Failed to load native binding: ${error.message}. Platform: ${platform}, Architecture: ${arch}`)
+  throw new Error(
+    `Failed to load native binding: ${error.message}. Platform: ${platform}, Architecture: ${arch}`
+  );
 }
 
 // Export the native binding directly
