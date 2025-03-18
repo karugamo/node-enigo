@@ -6,6 +6,7 @@ console.log('Available functions in enigoExample module:');
 console.log(Object.keys(enigoExample));
 console.log('Is typeText a function?', typeof enigoExample.typeText === 'function');
 console.log('Is moveMouse a function?', typeof enigoExample.moveMouse === 'function');
+console.log('Is mouseButton a function?', typeof enigoExample.mouseButton === 'function');
 console.log('');
 
 console.log('Running Enigo example from Node.js...');
@@ -26,9 +27,11 @@ const rl = readline.createInterface({
 console.log('Select a demo to run:');
 console.log('1. Typing demo');
 console.log('2. Mouse movement demo');
-console.log('3. Combined demo (typing + mouse movement)');
+console.log('3. Mouse button demo');
+console.log('4. Combined demo (typing + mouse movement)');
+console.log('5. Full demo (typing + mouse movement + buttons)');
 
-rl.question('Enter your choice (1-3): ', (choice) => {
+rl.question('Enter your choice (1-5): ', (choice) => {
   switch(choice) {
     case '1':
       runTypingDemo(rl);
@@ -38,7 +41,15 @@ rl.question('Enter your choice (1-3): ', (choice) => {
       rl.close();
       break;
     case '3':
+      runButtonDemo();
+      rl.close();
+      break;
+    case '4':
       runCombinedDemo();
+      rl.close();
+      break;
+    case '5':
+      runFullDemo();
       rl.close();
       break;
     default:
@@ -130,6 +141,62 @@ function runMouseDemo() {
   }, 4000);
 }
 
+// Button demo
+function runButtonDemo() {
+  console.log('');
+  console.log('You have 4 seconds before the mouse buttons will be tested...');
+  console.log('The demo will perform various button actions (click, press, release).');
+  console.log('');
+  
+  setTimeout(async () => {
+    console.log('Starting mouse button test...');
+
+    try {
+      // First move to absolute position (300, 300)
+      console.log('\nMoving to position (300, 300)...');
+      await enigoExample.moveMouse(300, 300);
+      
+      // Wait for 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Click left button
+      console.log('\nClicking left mouse button...');
+      const result1 = await enigoExample.mouseButton('left', 'click');
+      console.log('Result:', result1);
+      
+      // Wait for 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Test press and release
+      console.log('\nTesting press and release of right button...');
+      console.log('Pressing right mouse button...');
+      const result2 = await enigoExample.mouseButton('right', 'press');
+      console.log('Result:', result2);
+      
+      // Wait for 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      console.log('Releasing right mouse button...');
+      const result3 = await enigoExample.mouseButton('right', 'release');
+      console.log('Result:', result3);
+      
+      // Wait for 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Click middle button
+      console.log('\nClicking middle mouse button...');
+      const result4 = await enigoExample.mouseButton('middle', 'click');
+      console.log('Result:', result4);
+      
+    } catch (error) {
+      console.error('Error running button demo:', error);
+    }
+
+    console.log('\nButton demo completed.');
+    console.log('If the buttons didn\'t work, please check the permission settings mentioned above.');
+  }, 4000);
+}
+
 // Combined demo
 function runCombinedDemo() {
   console.log('');
@@ -165,6 +232,55 @@ function runCombinedDemo() {
     }
     
     console.log('\nCombined demo completed.');
+    console.log('If the demo didn\'t work as expected, please check the permission settings mentioned above.');
+  }, 4000);
+}
+
+// Full demo
+function runFullDemo() {
+  console.log('');
+  console.log('Running full demo with typing, mouse movement, and button actions...');
+  console.log('You have 4 seconds to prepare...');
+  console.log('');
+  
+  setTimeout(async () => {
+    try {
+      // Move mouse to position (300, 300)
+      console.log('\nMoving mouse to position (300, 300)...');
+      await enigoExample.moveMouse(300, 300);
+      
+      // Wait for 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Click left button
+      console.log('\nClicking left mouse button...');
+      await enigoExample.mouseButton('left', 'click');
+      
+      // Wait for 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Type some text
+      console.log('\nTyping text...');
+      await enigoExample.typeText('Hello from node-enigo! This is a full demo with typing and mouse actions.');
+      
+      // Wait for 1 second
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Move mouse relatively and perform right click
+      console.log('\nMoving mouse relatively by (100, 50)...');
+      await enigoExample.moveMouse(100, 50, true);
+      
+      // Wait for 0.5 seconds
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('\nClicking right mouse button...');
+      await enigoExample.mouseButton('right', 'click');
+      
+    } catch (error) {
+      console.error('Error running full demo:', error);
+    }
+    
+    console.log('\nFull demo completed.');
     console.log('If the demo didn\'t work as expected, please check the permission settings mentioned above.');
   }, 4000);
 } 

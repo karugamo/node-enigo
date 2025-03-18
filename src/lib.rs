@@ -1,7 +1,7 @@
 #![deny(clippy::all)]
 
 use enigo::{
-    Enigo, Keyboard, Settings, Mouse, Coordinate,
+    Enigo, Keyboard, Settings, Mouse, Coordinate, Button, Direction,
 };
 use napi_derive::napi;
 
@@ -67,4 +67,57 @@ pub async fn move_mouse(x: i32, y: i32, is_relative: Option<bool>) -> napi::Resu
     };
     
     Ok(move_result)
+} 
+
+#[napi]
+pub async fn mouse_button(button_name: String, action: String) -> napi::Result<String> {
+    #[cfg(target_os = "windows")]
+    // This is needed on Windows if you want the application to respect the users scaling settings.
+    let _ = enigo::set_dpi_awareness();
+    
+    // Create Enigo instance with error handling
+    let enigo_result = Enigo::new(&Settings::default());
+    
+    if let Err(e) = enigo_result {
+        return Ok(format!(
+            "Error creating Enigo instance: {:?}\n\nOn macOS, you need to grant accessibility permissions to the terminal or application running this code.\nGo to System Preferences > Security & Privacy > Privacy > Accessibility and add the application.",
+            e
+        ));
+    }
+    
+    let mut enigo = enigo_result.unwrap();
+    
+    // Parse the button
+    let button = match button_name.to_lowercase().as_str() {
+        "left" => Button::Left,
+        "right" => Button::Right,
+        "middle" => Button::Middle,
+        "scrollup" | "scroll_up" => Button::ScrollUp,
+        "scrolldown" | "scroll_down" => Button::ScrollDown,
+        "scrollleft" | "scroll_left" => Button::ScrollLeft,
+        "scrollright" | "scroll_right" => Button::ScrollRight,
+        _ => return Ok(format!("Invalid button name: {}. Valid options are: left, right, middle, scrollUp, scrollDown, scrollLeft, scrollRight", button_name)),
+    };
+    
+    // Parse the action
+    let direction = match action.to_lowercase().as_str() {
+        "press" => Direction::Press,
+        "release" => Direction::Release,
+        "click" => Direction::Click,
+        _ => return Ok(format!("Invalid action: {}. Valid options are: press, release, click", action)),
+    };
+    
+    // Execute the button action with error handling
+    let button_result = match enigo.button(button, direction) {
+        Ok(_) => {
+            match direction {
+                Direction::Press => format!("Successfully pressed {} mouse button", button_name),
+                Direction::Release => format!("Successfully released {} mouse button", button_name),
+                Direction::Click => format!("Successfully clicked {} mouse button", button_name),
+            }
+        },
+        Err(e) => format!("Error performing button action: {:?}", e),
+    };
+    
+    Ok(button_result)
 } 

@@ -22,6 +22,13 @@ await enigo.moveMouse(100, 100);
 // Move mouse relatively by (50, 50)
 await enigo.moveMouse(50, 50, true);
 
+// Click left mouse button
+await enigo.mouseButton('left', 'click');
+
+// Press and release right mouse button
+await enigo.mouseButton('right', 'press');
+await enigo.mouseButton('right', 'release');
+
 // Or with Promise syntax
 enigo.typeText('Hello, world!')
   .then(result => console.log(result))
@@ -113,6 +120,67 @@ async function example() {
 example();
 ```
 
+### `mouseButton(buttonName: string, action: string): Promise<string>`
+
+Performs a mouse button action such as click, press, or release.
+
+**Parameters:**
+- `buttonName` (string): The name of the button to use. Valid values are:
+  - `"left"`: Left mouse button
+  - `"right"`: Right mouse button
+  - `"middle"`: Middle mouse button
+  - `"scrollUp"` or `"scroll_up"`: Scroll up button
+  - `"scrollDown"` or `"scroll_down"`: Scroll down button
+  - `"scrollLeft"` or `"scroll_left"`: Scroll left button
+  - `"scrollRight"` or `"scroll_right"`: Scroll right button
+- `action` (string): The action to perform. Valid values are:
+  - `"click"`: Press and release the button
+  - `"press"`: Press and hold the button
+  - `"release"`: Release the button
+
+**Returns:**
+- A Promise that resolves to a string with the result of the operation
+
+**Example with button click:**
+```javascript
+const enigo = require('node-enigo');
+
+async function example() {
+  try {
+    // Click the left mouse button
+    const result = await enigo.mouseButton('left', 'click');
+    console.log(result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+example();
+```
+
+**Example with press and release:**
+```javascript
+const enigo = require('node-enigo');
+
+async function example() {
+  try {
+    // Press and hold the right mouse button
+    await enigo.mouseButton('right', 'press');
+    
+    // Perform some other action while the button is held down
+    await enigo.moveMouse(50, 50, true);
+    
+    // Release the right mouse button
+    const result = await enigo.mouseButton('right', 'release');
+    console.log(result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+example();
+```
+
 ## Supported Platforms
 
 - **macOS**: x64, arm64
@@ -142,7 +210,7 @@ On Linux, make sure X11 permissions are set correctly.
 
 ## Examples
 
-See the [example.js](./example.js), [non-blocking-example.js](./non-blocking-example.js), and [mouse-example.js](./mouse-example.js) files for usage examples.
+See the [example.js](./example.js), [mouse-example.js](./mouse-example.js), and [test.js](./test.js) files for usage examples.
 
 ## Building from Source
 
