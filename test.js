@@ -7,6 +7,7 @@ console.log(Object.keys(enigoExample));
 console.log('Is typeText a function?', typeof enigoExample.typeText === 'function');
 console.log('Is moveMouse a function?', typeof enigoExample.moveMouse === 'function');
 console.log('Is mouseButton a function?', typeof enigoExample.mouseButton === 'function');
+console.log('Is key a function?', typeof enigoExample.key === 'function');
 console.log('');
 
 console.log('Running Enigo example from Node.js...');
@@ -30,8 +31,9 @@ console.log('2. Mouse movement demo');
 console.log('3. Mouse button demo');
 console.log('4. Combined demo (typing + mouse movement)');
 console.log('5. Full demo (typing + mouse movement + buttons)');
+console.log('6. Keyboard test (copy & paste)');
 
-rl.question('Enter your choice (1-5): ', (choice) => {
+rl.question('Enter your choice (1-6): ', (choice) => {
   switch(choice) {
     case '1':
       runTypingDemo(rl);
@@ -50,6 +52,10 @@ rl.question('Enter your choice (1-5): ', (choice) => {
       break;
     case '5':
       runFullDemo();
+      rl.close();
+      break;
+    case '6':
+      runKeyboardTest();
       rl.close();
       break;
     default:
@@ -283,4 +289,59 @@ function runFullDemo() {
     console.log('\nFull demo completed.');
     console.log('If the demo didn\'t work as expected, please check the permission settings mentioned above.');
   }, 4000);
+}
+
+// Keyboard test (copy and paste)
+function runKeyboardTest() {
+  // Determine the OS to use the correct modifier key
+  const isMac = process.platform === 'darwin';
+  const modifierKey = isMac ? 'cmd' : 'ctrl';
+  
+  console.log('');
+  console.log('==== Keyboard Key Test (Copy & Paste) ====');
+  console.log('This test will simulate keyboard shortcuts for copy and paste operations.');
+  console.log('');
+  console.log('Instructions:');
+  console.log('1. Open a text editor or any application where text can be edited');
+  console.log(`2. This test will first type some sample text`);
+  console.log(`3. It will select all the text using ${modifierKey.toUpperCase()}+A`);
+  console.log(`4. Then it will copy the text using ${modifierKey.toUpperCase()}+C`);
+  console.log(`5. Finally, it will paste the text using ${modifierKey.toUpperCase()}+V`);
+  console.log('');
+  console.log('You have 5 seconds to prepare (open a text editor)...');
+  
+  setTimeout(async () => {
+    try {
+      // Type some text that can be selected
+      console.log('\nTyping sample text...');
+      await enigoExample.typeText('This is some text for testing keyboard shortcuts. ');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Select all the text using Cmd+A or Ctrl+A
+      console.log(`\nSelecting all text using ${modifierKey.toUpperCase()}+A...`);
+      await enigoExample.keys([modifierKey, 'a']);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Copy the text using Cmd+C or Ctrl+C
+      console.log(`\nCopying selected text using ${modifierKey.toUpperCase()}+C...`);
+      await enigoExample.keys([modifierKey, 'c']);
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Type a newline to position cursor for paste
+      console.log('\nMoving to a new line...');
+      await enigoExample.key('return', 'click');
+      await enigoExample.key('return', 'click');
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      
+      // Paste the text using Cmd+V or Ctrl+V
+      console.log(`\nPasting text using ${modifierKey.toUpperCase()}+V...`);
+      await enigoExample.keys([modifierKey, 'v']);
+      
+    } catch (error) {
+      console.error('Error running keyboard test:', error);
+    }
+    
+    console.log('\nKeyboard test completed.');
+    console.log('If the shortcuts didn\'t work, please check the permission settings mentioned above.');
+  }, 5000);
 } 
