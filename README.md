@@ -29,6 +29,13 @@ await enigo.mouseButton('left', 'click');
 await enigo.mouseButton('right', 'press');
 await enigo.mouseButton('right', 'release');
 
+// Press a single key (Enter/Return key)
+await enigo.key('return', 'click');
+
+// Press multiple keys simultaneously (keyboard shortcut)
+await enigo.keys(['ctrl', 'c']); // Ctrl+C on Windows/Linux
+await enigo.keys(['cmd', 'c']); // Cmd+C on macOS
+
 // Or with Promise syntax
 enigo.typeText('Hello, world!')
   .then(result => console.log(result))
@@ -172,6 +179,116 @@ async function example() {
     
     // Release the right mouse button
     const result = await enigo.mouseButton('right', 'release');
+    console.log(result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+example();
+```
+
+### `key(keyName: string, action: string): Promise<string>`
+
+Simulates a key press, release, or click action for a single key.
+
+**Parameters:**
+- `keyName` (string): The name of the key to use. Supports:
+  - Letters: `"a"` through `"z"`
+  - Numbers: `"0"` through `"9"`
+  - Special keys: `"space"`, `"return"`, `"enter"`, `"tab"`, `"backspace"`, `"escape"`, `"esc"`, etc.
+  - Arrow keys: `"up"`, `"down"`, `"left"`, `"right"`
+  - Navigation keys: `"home"`, `"end"`, `"pageup"`, `"pagedown"`, `"delete"`, `"del"`
+  - Function keys: `"f1"` through `"f12"`
+  - Modifier keys: `"shift"`, `"control"`, `"ctrl"`, `"alt"`, `"option"`, `"meta"`, `"cmd"`, `"windows"`, `"win"`
+  - Symbol keys: `"-"`, `"="`, `"["`, `"]"`, `"\"`, `";"`, `"'"`, `","`, `"."`, `"/"`, etc.
+- `action` (string): The action to perform. Valid values are:
+  - `"click"`: Press and release the key
+  - `"press"`: Press and hold the key
+  - `"release"`: Release the key
+
+**Returns:**
+- A Promise that resolves to a string with the result of the operation
+
+**Example with key click:**
+```javascript
+const enigo = require('node-enigo');
+
+async function example() {
+  try {
+    // Press and release the Enter key
+    const result = await enigo.key('return', 'click');
+    console.log(result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+example();
+```
+
+**Example with key press and release:**
+```javascript
+const enigo = require('node-enigo');
+
+async function example() {
+  try {
+    // Press and hold the Shift key
+    await enigo.key('shift', 'press');
+    
+    // Type a character (will be uppercase due to Shift being held)
+    await enigo.typeText('a');
+    
+    // Release the Shift key
+    const result = await enigo.key('shift', 'release');
+    console.log(result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+example();
+```
+
+### `keys(keyArray: string[]): Promise<string>`
+
+Simulates pressing multiple keys simultaneously (a keyboard shortcut). This function presses all modifier keys, then presses and releases non-modifier keys, and finally releases all modifier keys.
+
+**Parameters:**
+- `keyArray` (string[]): An array of key names to press simultaneously. The same key names as in the `key()` function are supported.
+
+**Returns:**
+- A Promise that resolves to a string with the result of the operation
+
+**Example with copy shortcut:**
+```javascript
+const enigo = require('node-enigo');
+
+async function example() {
+  try {
+    // Select some text first
+    await enigo.keys(['ctrl', 'a']); // Select all
+    
+    // Copy the selected text (Ctrl+C on Windows/Linux, Cmd+C on macOS)
+    const modifierKey = process.platform === 'darwin' ? 'cmd' : 'ctrl';
+    const result = await enigo.keys([modifierKey, 'c']);
+    console.log(result);
+  } catch (error) {
+    console.error('Error:', error);
+  }
+}
+
+example();
+```
+
+**Example with more complex keyboard shortcut:**
+```javascript
+const enigo = require('node-enigo');
+
+async function example() {
+  try {
+    // Press Ctrl+Shift+Esc on Windows (Task Manager)
+    const result = await enigo.keys(['ctrl', 'shift', 'escape']);
     console.log(result);
   } catch (error) {
     console.error('Error:', error);
