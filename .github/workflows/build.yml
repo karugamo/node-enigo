@@ -66,16 +66,16 @@ jobs:
         run: |
           if [ "${{ matrix.os }}" = "macos-latest" ] && [ "${{ matrix.target }}" = "aarch64-apple-darwin" ]; then
             # For macOS arm64
-            cp target/aarch64-apple-darwin/release/libenigo_example.dylib ${{ matrix.artifact_name }}
+            cp target/aarch64-apple-darwin/release/libnode_enigo.dylib ${{ matrix.artifact_name }}
           elif [ "${{ matrix.os }}" = "ubuntu-24.04-arm" ] && [ "${{ matrix.target }}" = "aarch64-unknown-linux-gnu" ]; then
             # For native Linux arm64
-            cp target/release/libenigo_example.so ${{ matrix.artifact_name }}
+            cp target/release/libnode_enigo.so ${{ matrix.artifact_name }}
           elif [ "${{ matrix.os }}" = "ubuntu-latest" ] && [ "${{ matrix.target }}" = "aarch64-unknown-linux-gnu" ]; then
             # For Linux arm64
-            cp target/aarch64-unknown-linux-gnu/release/libenigo_example.so ${{ matrix.artifact_name }}
+            cp target/aarch64-unknown-linux-gnu/release/libnode_enigo.so ${{ matrix.artifact_name }}
           elif [ "${{ matrix.os }}" = "ubuntu-latest" ]; then
             # For Linux x64
-            cp target/release/libenigo_example.so ${{ matrix.artifact_name }}
+            cp target/release/libnode_enigo.so ${{ matrix.artifact_name }}
           fi
 
       - name: Upload artifact

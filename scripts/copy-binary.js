@@ -6,7 +6,7 @@ const { platform, arch } = process;
 const extension = platform === 'win32' ? '.dll' : platform === 'darwin' ? '.dylib' : '.so';
 
 // Source path (where Cargo builds the binary)
-const sourcePath = path.join(__dirname, '..', 'target', 'release', `libenigo_example${extension}`);
+const sourcePath = path.join(__dirname, '..', 'target', 'release', `libnode_enigo${extension}`);
 
 // Destination path (where Node.js expects to find the binary)
 const destPath = path.join(__dirname, '..', 'index.node');
